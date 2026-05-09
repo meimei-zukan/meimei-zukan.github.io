@@ -296,12 +296,20 @@ function detectShop(url) {
 }
 
 function extractRakutenItemCode(url) {
-  // もしもAFからRakuten URLを取り出す
   let targetUrl = url;
+
+  // もしもAF: url=パラメータから取り出す
   if (/moshimo\.com/.test(url)) {
     const match = url.match(/url=([^&]+)/);
     if (match) targetUrl = decodeURIComponent(match[1]);
   }
+
+  // 楽天アフィリエイト直接リンク: hb.afl.rakuten.co.jp/?pc=XXX
+  if (/hb\.afl\.rakuten\.co\.jp/.test(url)) {
+    const pcMatch = url.match(/[?&]pc=([^&]+)/);
+    if (pcMatch) targetUrl = decodeURIComponent(pcMatch[1]);
+  }
+
   // item.rakuten.co.jp/shopcode/itemcode/
   const m = targetUrl.match(/item\.rakuten\.co\.jp\/([^\/]+)\/([^\/\?]+)/);
   if (m) return { shopCode: m[1], itemCode: m[2] };
@@ -338,7 +346,9 @@ async function handleFetch() {
         await fetchRakutenItem(itemInfo.shopCode, itemInfo.itemCode);
         showStatus(status, '楽天商品情報を自動取得しました ✓', 'ok');
       } catch(e) {
-        showStatus(status, `楽天API未応答（${e.message}）。手動で入力してください。`, 'info');
+        // API失敗時も納期・タグだけデフォルト設定
+        document.getElementById('f_delivery').value = '〜3日';
+        showStatus(status, '楽天URLを検出しました。商品名・価格・画像を手動で入力してください。（APIは準備中）', 'info');
       }
       btn.innerHTML = '情報取得';
       btn.disabled = false;
