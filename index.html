@@ -505,8 +505,6 @@
       <button class="filter-btn active" data-filter="shop" data-value="all">購入先：すべて</button>
       <button class="filter-btn" data-filter="shop" data-value="Amazon">Amazon</button>
       <button class="filter-btn" data-filter="shop" data-value="楽天">楽天</button>
-      <button class="filter-btn" data-filter="shop" data-value="minne">minne</button>
-      <button class="filter-btn" data-filter="shop" data-value="Creema">Creema</button>
     </div>
   </div>
 </div>
@@ -550,7 +548,7 @@ function moshimoUrl(itemUrl) {
 }
 
 // =====================
-// 静的商品データ（Amazon・Creema・minne）
+// 静的商品データ（Amazon・楽天）
 // =====================
 const staticProducts = [
   {
@@ -596,186 +594,6 @@ const staticProducts = [
     tags: ["手形", "足形"],
     image: "https://m.media-amazon.com/images/I/51VgKoFBxSL._SL500_.jpg",
     url: "https://www.amazon.co.jp/dp/B07GWGCJXX?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 8,
-    name: "【命名書】手書き ゴールドふりがな A4サイズ 額縁付き",
-    price: 3900,
-    style: "和風",
-    type: "手書き",
-    shop: "Creema",
-    rating: 5.0,
-    reviewCount: 1082,
-    delivery: "4〜5日",
-    tags: ["手書き", "額縁付き"],
-    image: "https://c.p02.c4a.im/images/item/12684812/4f8d49e3b833bf19c80b9e7a85df4304c0e13cb3ba556c42b1243d59bf98ae0c?d=583x585",
-    url: "https://www.creema.jp/item/12684812/detail",
-    isNew: false
-  },
-  {
-    id: 9,
-    name: "【人気No.1】ウッドフレームの刺繡命名書 おしゃれに飾れる",
-    price: 4200,
-    style: "ナチュラル",
-    type: "手書き",
-    shop: "Creema",
-    rating: 5.0,
-    reviewCount: 79,
-    delivery: "1〜3日",
-    tags: ["刺繍", "木製フレーム"],
-    image: "https://c.p02.c4a.im/images/item/18973284/37872ce4d2aa5947db316c5aea881a3d932702ea30c34f6fb99f70e93fd6fbea?d=583x585",
-    url: "https://www.creema.jp/item/18973284/detail",
-    isNew: false
-  },
-  {
-    id: 10,
-    name: "写真入り命名書 キャンバス お七夜・誕生記念 16サイズから選べる",
-    price: 2800,
-    style: "洋風",
-    type: "印刷",
-    shop: "Creema",
-    rating: 5.0,
-    reviewCount: 188,
-    delivery: "〜7日",
-    tags: ["写真入り", "キャンバス"],
-    image: "https://c.p02.c4a.im/images/item/17320925/f2e6aff9043b8fcd6124ffa1a412e13596fd5d4acd31d30f0af6942fe5dd4c4d?d=583x585",
-    url: "https://www.creema.jp/item/17320925/detail",
-    isNew: false
-  },
-  {
-    id: 11,
-    name: "命名ボード 命名書 おかお 出産祝い",
-    price: 2900,
-    style: "ナチュラル",
-    type: "印刷",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 5886,
-    delivery: "〜5日",
-    tags: ["かわいい", "名入れ"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/e1852f41f9e2efa68d3116fc20f4287b1a56a119.jpeg/productimages/233146303/w1600xh1600/b3669a65ef86d54fbe94dff61d2a32e04c334b4c.jpg?1766231531",
-    url: "https://minne.com/items/42531946",
-    isNew: false
-  },
-  {
-    id: 12,
-    name: "【ころんとかわいい】katachi 木製命名書 レーザー彫刻",
-    price: 3400,
-    style: "ナチュラル",
-    type: "印刷",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 682,
-    delivery: "〜7日",
-    tags: ["木製", "レーザー彫刻"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/898279c12ffa496aeae43e6764ee900d90a7d102.jpeg/productimages/184172634/w1600xh1600/2d960d3673e5480edaf4afb4bed360a908989fa7.jpeg?1694905502",
-    url: "https://minne.com/items/35114053",
-    isNew: false
-  },
-  {
-    id: 13,
-    name: "手足形 キャンバス命名書 F3サイズ 週間ランキング1位",
-    price: 4000,
-    style: "洋風",
-    type: "印刷",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 7757,
-    delivery: "〜7日",
-    tags: ["手形", "足形"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/7184aef83d0b956e364930d2ca8693b52a0552a5.jpeg/productimages/234128273/w1600xh1600/f08dba5dcb652682750ebcc626dcdfdfa78160af.png?1768302585",
-    url: "https://minne.com/items/34056615",
-    isNew: false
-  },
-  {
-    id: 14,
-    name: "書家 手書き命名書 A5クリアフレーム付き",
-    price: 10000,
-    style: "和風",
-    type: "手書き",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 321,
-    delivery: "〜14日",
-    tags: ["手書き", "額縁付き"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/2dad61157741b0320c84e1403dd0ed1a8f4be81e.jpeg/productimages/193992941/w1600xh1600/56e5abd2775e7583e788539d65d389e19cd8e754.jpg?1707837894",
-    url: "https://minne.com/items/38043541",
-    isNew: false
-  },
-  {
-    id: 15,
-    name: "刺繍命名書 手形 足形 お七夜にも A5サイズ",
-    price: 5800,
-    style: "ナチュラル",
-    type: "手書き",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 221,
-    delivery: "〜10日",
-    tags: ["刺繍", "手形"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/6faa3999efb90d73d4d0d8b180efa2294fc31eee.jpeg/productimages/197755552/w1600xh1600/41a4749572b93929ebe7acbee0d43bcc43a1e5d5.jpeg?1712674361",
-    url: "https://minne.com/items/38384939",
-    isNew: false
-  },
-  {
-    id: 16,
-    name: "バースデームーン命名書 生まれた日の月を飾るポスター",
-    price: 2000,
-    style: "モダン",
-    type: "デジタル",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 21,
-    delivery: "即日〜3日",
-    tags: ["月", "ポスター"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/3736d25adbc5f785bf759239449637fd5eb78f25.jpeg/productimages/234292059/w1600xh1600/5d02ee7d61cbb0b4b388214f610613c62e1a0eba.jpeg?1768579872",
-    url: "https://minne.com/items/44728168",
-    isNew: true
-  },
-  {
-    id: 17,
-    name: "人気No.1 命名書 足形 手形 誕生日",
-    price: 900,
-    style: "洋風",
-    type: "デジタル",
-    shop: "minne",
-    rating: 5.0,
-    reviewCount: 225,
-    delivery: "即日〜2日",
-    tags: ["送料無料", "手形"],
-    image: "https://image.minne.com/minne/mobile_app_product/600x600cq85/3eab326afeed0e24ce40185ebd5ff112901aa372.jpeg/productimages/237593940/w1600xh1600/a4458a242f65ae763e28034e9031d94604034d62.jpeg?1774014435",
-    url: "https://minne.com/items/36440848",
-    isNew: false
-  },
-  {
-    id: 19,
-    name: "【命名書】書道家手書き おしゃれ シンプル インテリア A4",
-    price: 4500,
-    style: "モダン",
-    type: "手書き",
-    shop: "Creema",
-    rating: 5.0,
-    reviewCount: 129,
-    delivery: "4〜5日",
-    tags: ["手書き", "シンプル"],
-    image: "https://c.p02.c4a.im/images/item/11781276/92bdbd325c8ce728fdf894a31fc770888cd047c24ecd0162ee0ec1e7522924c5?d=583x585",
-    url: "https://www.creema.jp/item/11781276/detail",
-    isNew: false
-  },
-  {
-    id: 20,
-    name: "命名書 自分で書く 命名紙2枚＋フレームセット",
-    price: 2500,
-    style: "ナチュラル",
-    type: "印刷",
-    shop: "Creema",
-    rating: 5.0,
-    reviewCount: 280,
-    delivery: "翌日〜3日",
-    tags: ["フレーム付き", "自分で書く"],
-    image: "https://c.p02.c4a.im/images/item/17472937/7ff70471df8b045e052cf0e864277bcc8e46d12b847cfa2c82bf7e63d74cd19c?d=583x585",
-    url: "https://www.creema.jp/item/17472937/detail",
     isNew: false
   },
   // ===== 楽天市場 トップ商品 =====
