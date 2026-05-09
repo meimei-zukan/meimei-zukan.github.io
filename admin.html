@@ -350,9 +350,15 @@ async function handleFetch() {
         await fetchRakutenItem(itemInfo.shopCode, itemInfo.itemCode);
         showStatus(status, '楽天商品情報を自動取得しました ✓', 'ok');
       } catch(e) {
-        // API失敗時も納期・タグだけデフォルト設定
-        document.getElementById('f_delivery').value = '〜3日';
-        showStatus(status, '楽天URLを検出しました。商品名・価格・画像を手動で入力してください。（APIは準備中）', 'info');
+        // APIが失敗した場合、ページスクレイプで取得を試みる
+        showStatus(status, '商品ページから情報を取得中...', 'info');
+        try {
+          await scrapeRakutenPage(url);
+          showStatus(status, '商品情報をページから取得しました ✓（画像は確認してください）', 'ok');
+        } catch(e2) {
+          document.getElementById('f_delivery').value = '〜3日';
+          showStatus(status, '楽天URLを検出しました。商品名・価格・画像を手動で入力してください。', 'info');
+        }
       }
       btn.innerHTML = '情報取得';
       btn.disabled = false;
@@ -366,6 +372,71 @@ async function handleFetch() {
   } else {
     showStatus(status, `${shop}のURLを検出。商品情報を手動で入力してください。`, 'info');
   }
+}
+
+// =====================
+// ページスクレイプ（APIが使えない間の代替）
+// =====================
+async function scrapeRakutenPage(affiliateUrl) {
+  // 実際の商品URLを取り出す
+  let itemUrl = affiliateUrl;
+  if (/hb\.afl\.rakuten\.co\.jp/.test(affiliateUrl)) {
+    const m = affiliateUrl.match(/[?&]pc=([^&]+)/);
+    if (m) itemUrl = decodeURIComponent(m[1]);
+  } else if (/moshimo\.com/.test(affiliateUrl)) {
+    const m = affiliateUrl.match(/url=([^&]+)/);
+    if (m) itemUrl = decodeURIComponent(m[1]);
+  }
+
+  // CORSプロキシ経由でページ取得
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(itemUrl)}`;
+  const res = await fetch(proxyUrl);
+  if (!res.ok) throw new Error('fetch failed');
+  const data = await res.json();
+  const html = data.contents || '';
+  if (!html) throw new Error('empty');
+
+  // ★ レビュー評価: 'irevrate':4.8 または reviewAverage
+  const rateMatch = html.match(/'irevrate'\s*:\s*([\d.]+)/) ||
+                    html.match(/"reviewAverage"\s*:\s*"?([\d.]+)"?/);
+  if (rateMatch) document.getElementById('f_rating').value = parseFloat(rateMatch[1]);
+
+  // ★ レビュー件数: 'irevnum':736
+  const countMatch = html.match(/'irevnum'\s*:\s*(\d+)/) ||
+                     html.match(/"reviewCount"\s*:\s*(\d+)/);
+  if (countMatch) document.getElementById('f_reviewCount').value = parseInt(countMatch[1]);
+
+  // 商品名: og:title
+  const titleMatch = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i) ||
+                     html.match(/<title>([^<]+)<\/title>/i);
+  if (titleMatch && !document.getElementById('f_name').value) {
+    const rawTitle = titleMatch[1].replace(/\s*[\|｜].*$/, '').replace(/楽天市場.*$/, '').trim();
+    document.getElementById('f_name').value = rawTitle.substring(0, 60);
+  }
+
+  // 商品画像: og:image
+  const imgMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/i);
+  if (imgMatch && !document.getElementById('f_image').value) {
+    document.getElementById('f_image').value = imgMatch[1];
+    previewImg(imgMatch[1]);
+  }
+
+  // 価格: og:price:amount または data-price
+  const priceMatch = html.match(/<meta[^>]+property="product:price:amount"[^>]+content="([^"]+)"/i) ||
+                     html.match(/'iorderprice'\s*:\s*(\d+)/) ||
+                     html.match(/class="price2"[^>]*>.*?(\d[\d,]+)/s);
+  if (priceMatch && !document.getElementById('f_price').value) {
+    document.getElementById('f_price').value = parseInt(priceMatch[1].replace(/,/g, ''));
+  }
+
+  // スタイル・タイプ・納期を自動設定
+  const name = document.getElementById('f_name').value;
+  if (name) {
+    document.getElementById('f_style').value = guessStyle(name);
+    document.getElementById('f_type').value = guessType(name);
+    document.getElementById('f_tags').value = extractTags(name).join(', ');
+  }
+  document.getElementById('f_delivery').value = '〜3日';
 }
 
 async function fetchRakutenItem(shopCode, itemCode) {
