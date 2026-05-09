@@ -820,7 +820,6 @@ function extractTags(name) {
 async function fetchRakutenProducts() {
   const params = new URLSearchParams({
     applicationId: RAKUTEN_APP_ID,
-    affiliateId: RAKUTEN_AFFILIATE_ID,
     keyword: '命名書',
     sort: '-reviewCount',
     hits: '30',
@@ -850,7 +849,7 @@ async function fetchRakutenProducts() {
       delivery: '〜3日',
       tags: extractTags(item.itemName),
       image: img,
-      url: item.affiliateUrl || moshimoUrl(item.itemUrl),
+      url: moshimoUrl(item.itemUrl),
       isNew: false
     };
   });
@@ -958,9 +957,14 @@ document.getElementById("sortSelect").addEventListener("change", e => {
 // =====================
 // 初期化（Rakuten APIフェッチ）
 // =====================
+function loadManualProducts() {
+  try { return JSON.parse(localStorage.getItem('meimei_manual_products')) || []; }
+  catch { return []; }
+}
+
 async function init() {
-  // まず静的商品（Amazon・Creema・minne）を即座に表示
-  products = [...staticProducts];
+  // 静的商品 ＋ 手動追加商品を即座に表示
+  products = [...staticProducts, ...loadManualProducts()];
   render();
 
   // ローディング表示
@@ -975,7 +979,7 @@ async function init() {
     const rakutenItems = await fetchRakutenProducts();
     loadingDiv.remove();
     if (rakutenItems.length > 0) {
-      products = [...staticProducts, ...rakutenItems];
+      products = [...staticProducts, ...loadManualProducts(), ...rakutenItems];
       render();
     }
   } catch (e) {
