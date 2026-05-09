@@ -537,12 +537,6 @@
 </footer>
 
 <script>
-// =====================
-// 設定
-// =====================
-const RAKUTEN_APP_ID = 'b1990933-1640-4544-8047-be6b8c3be191';
-const RAKUTEN_AFFILIATE_ID = '539b76f5.74cbe0b5.539b76f6.a27651000';
-
 function moshimoUrl(itemUrl) {
   return `https://af.moshimo.com/af/c/click?a_id=1886762&p_id=54&pc_id=54&pl_id=616&url=${encodeURIComponent(itemUrl)}`;
 }
@@ -666,73 +660,6 @@ let products = [];
 let filters = { style: "all", type: "all", price: "all", shop: "all" };
 let sortBy = "reviewCount";
 
-// =====================
-// Rakuten APIヘルパー
-// =====================
-function guessStyle(name) {
-  if (/和風|毛筆|書道|書家|色紙|和紙/.test(name)) return '和風';
-  if (/シンプル|スタイリッシュ|モダン/.test(name)) return 'モダン';
-  if (/木製|ウッド|刺繍|ファブリック|布/.test(name)) return 'ナチュラル';
-  return '洋風';
-}
-
-function guessType(name) {
-  if (/手書き|手描き|毛筆|書道|書家|代筆/.test(name)) return '手書き';
-  if (/データ|ダウンロード|印刷データ|PDF|デジタル/.test(name)) return 'デジタル';
-  return '印刷';
-}
-
-function extractTags(name) {
-  const tagMap = [
-    ['手形', '手形'], ['足形', '足形'], ['写真', '写真入り'],
-    ['額縁', '額縁付き'], ['フレーム', 'フレーム付き'], ['木製', '木製'],
-    ['刺繍', '刺繍'], ['送料無料', '送料無料'], ['ディズニー', 'ディズニー'],
-    ['手書き', '手書き'], ['代筆', '代筆'], ['ローマ字', 'ローマ字付き'],
-    ['キャンバス', 'キャンバス'], ['ラミネート', 'ラミネート'],
-    ['名入れ', '名入れ'], ['お七夜', 'お七夜'],
-  ];
-  const tags = tagMap.filter(([k]) => name.includes(k)).map(([,v]) => v).slice(0, 2);
-  if (tags.length === 0) tags.push('命名書');
-  return tags;
-}
-
-async function fetchRakutenProducts() {
-  const params = new URLSearchParams({
-    applicationId: RAKUTEN_APP_ID,
-    keyword: '命名書',
-    sort: '-reviewCount',
-    hits: '30',
-    availability: '1',
-    format: 'json',
-    formatVersion: '2'
-  });
-
-  const res = await fetch(`https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?${params}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  if (!data.Items) return [];
-
-  return data.Items.map((item, i) => {
-    const rawImg = Array.isArray(item.mediumImageUrls) && item.mediumImageUrls.length > 0
-      ? item.mediumImageUrls[0] : '';
-    const img = rawImg.replace('?_ex=128x128', '?_ex=400x400');
-    return {
-      id: 1000 + i,
-      name: item.itemName.length > 55 ? item.itemName.substring(0, 55) + '…' : item.itemName,
-      price: item.itemPrice,
-      style: guessStyle(item.itemName),
-      type: guessType(item.itemName),
-      shop: '楽天',
-      rating: parseFloat(item.reviewAverage) || 0,
-      reviewCount: item.reviewCount || 0,
-      delivery: '〜3日',
-      tags: extractTags(item.itemName),
-      image: img,
-      url: moshimoUrl(item.itemUrl),
-      isNew: false
-    };
-  });
-}
 
 // =====================
 // 商品カード生成
@@ -834,38 +761,16 @@ document.getElementById("sortSelect").addEventListener("change", e => {
 });
 
 // =====================
-// 初期化（Rakuten APIフェッチ）
+// 初期化
 // =====================
 function loadManualProducts() {
   try { return JSON.parse(localStorage.getItem('meimei_manual_products')) || []; }
   catch { return []; }
 }
 
-async function init() {
-  // 静的商品 ＋ 手動追加商品を即座に表示
+function init() {
   products = [...staticProducts, ...loadManualProducts()];
   render();
-
-  // ローディング表示
-  const gridContainer = document.querySelector(".grid-container");
-  const loadingDiv = document.createElement("div");
-  loadingDiv.id = "loadingMsg";
-  loadingDiv.style.cssText = "text-align:center;padding:16px 0;color:#8A8078;font-size:14px;";
-  loadingDiv.textContent = "楽天の最新商品を読み込み中...";
-  gridContainer.insertBefore(loadingDiv, gridContainer.firstChild);
-
-  try {
-    const rakutenItems = await fetchRakutenProducts();
-    loadingDiv.remove();
-    if (rakutenItems.length > 0) {
-      products = [...staticProducts, ...loadManualProducts(), ...rakutenItems];
-      render();
-    }
-  } catch (e) {
-    console.warn('Rakuten API error:', e);
-    loadingDiv.textContent = '楽天商品の読み込みに失敗しました。';
-    setTimeout(() => loadingDiv.remove(), 3000);
-  }
 }
 
 init();
