@@ -244,7 +244,7 @@
         <label>商品画像URL</label>
         <div class="img-preview-wrap">
           <input type="url" id="f_image" placeholder="https://..." oninput="previewImg(this.value)">
-          <img class="img-thumb" id="imgThumb" src="" alt="" onerror="this.src=''">
+          <img class="img-thumb" id="imgThumb" src="" alt="" onerror="this.onerror=null;this.src=''">
         </div>
       </div>
 
@@ -510,7 +510,7 @@ function renderList() {
 
   list.innerHTML = products.slice().reverse().map(p => `
     <div class="product-item">
-      <img src="${p.image || ''}" alt="${p.name}" onerror="this.src=''">
+      <img src="${p.image || ''}" alt="${p.name}" onerror="this.onerror=null;this.src=''">
       <div class="product-item-info">
         <div class="product-item-name">${p.name}</div>
         <div class="product-item-meta">
