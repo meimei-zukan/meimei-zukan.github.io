@@ -110,6 +110,8 @@
     .btn-primary { background: var(--accent-dark); color: #fff; }
     .btn-fetch   { background: var(--accent); color: #fff; white-space: nowrap; }
     .btn-danger  { background: var(--red); color: #fff; font-size: 12px; padding: 6px 12px; }
+    .btn-edit    { background: var(--accent-light); color: var(--accent-dark); border: 1px solid var(--accent); font-size: 12px; padding: 6px 12px; }
+    .editing-notice { background: var(--accent-light); border: 1px solid var(--accent); border-radius: 8px; padding: 8px 12px; font-size: 13px; color: var(--accent-dark); margin-bottom: 12px; display: none; }
     .btn-clear   { background: var(--border); color: var(--sub); font-size: 13px; }
 
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
@@ -178,6 +180,7 @@
 
   <!-- 入力フォーム -->
   <div class="card">
+    <div class="editing-notice" id="editingNotice">✏️ 編集モード：内容を変更して「更新する」を押してください</div>
     <h3>② 商品情報を入力 <span id="shopBadge"></span></h3>
 
     <div class="form-grid">
@@ -255,7 +258,7 @@
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="addProduct()">＋ 商品を追加</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="addProduct()">＋ 商品を追加</button>
       <button class="btn btn-clear" onclick="clearForm()">クリア</button>
     </div>
     <div id="addStatus" class="status"></div>
@@ -274,6 +277,7 @@
 <script>
 const RAKUTEN_APP_ID = 'b1990933-1640-4544-8047-be6b8c3be191';
 const STORAGE_KEY = 'meimei_manual_products';
+let currentEditId = null; // 編集中の商品ID
 
 // =====================
 // URL解析・自動取得
@@ -432,9 +436,7 @@ function addProduct() {
   if (!price || price <= 0) { showStatus(status, '価格を入力してください', 'err'); return; }
   if (!url)  { showStatus(status, 'アフィリエイトURLを入力してください', 'err'); return; }
 
-  const products = loadProducts();
-  const newProduct = {
-    id: Date.now(),
+  const productData = {
     name,
     price,
     shop:        document.getElementById('f_shop').value,
@@ -447,15 +449,26 @@ function addProduct() {
     image:       document.getElementById('f_image').value.trim(),
     url,
     isNew:       false,
-    addedAt:     new Date().toISOString()
   };
-  if (newProduct.tags.length === 0) newProduct.tags = ['命名書'];
+  if (productData.tags.length === 0) productData.tags = ['命名書'];
 
-  products.push(newProduct);
-  saveProducts(products);
-  renderList();
-  clearForm();
-  showStatus(status, `「${name.substring(0, 20)}…」を追加しました ✓`, 'ok');
+  let products = loadProducts();
+
+  if (currentEditId !== null) {
+    // 編集モード：既存商品を上書き
+    products = products.map(p => p.id === currentEditId ? { ...p, ...productData } : p);
+    saveProducts(products);
+    renderList();
+    clearForm();
+    showStatus(status, `「${name.substring(0, 20)}…」を更新しました ✓`, 'ok');
+  } else {
+    // 新規追加
+    products.push({ id: Date.now(), ...productData, addedAt: new Date().toISOString() });
+    saveProducts(products);
+    renderList();
+    clearForm();
+    showStatus(status, `「${name.substring(0, 20)}…」を追加しました ✓`, 'ok');
+  }
 }
 
 // =====================
@@ -471,6 +484,35 @@ function clearForm() {
   document.getElementById('shopBadge').innerHTML = '';
   document.getElementById('fetchStatus').style.display = 'none';
   document.getElementById('addStatus').style.display = 'none';
+  document.getElementById('editingNotice').style.display = 'none';
+  document.getElementById('submitBtn').textContent = '＋ 商品を追加';
+  currentEditId = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function editProduct(id) {
+  const p = loadProducts().find(p => p.id === id);
+  if (!p) return;
+  currentEditId = id;
+
+  document.getElementById('f_name').value        = p.name;
+  document.getElementById('f_price').value       = p.price;
+  document.getElementById('f_shop').value        = p.shop;
+  document.getElementById('f_style').value       = p.style;
+  document.getElementById('f_type').value        = p.type;
+  document.getElementById('f_rating').value      = p.rating || '';
+  document.getElementById('f_reviewCount').value = p.reviewCount || '';
+  document.getElementById('f_delivery').value    = p.delivery || '';
+  document.getElementById('f_tags').value        = (p.tags || []).join(', ');
+  document.getElementById('f_image').value       = p.image || '';
+  document.getElementById('f_url').value         = p.url || '';
+  previewImg(p.image || '');
+  updateShopBadge(p.shop);
+
+  document.getElementById('editingNotice').style.display = 'block';
+  document.getElementById('submitBtn').textContent = '✔ 更新する';
+  document.getElementById('addStatus').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function previewImg(src) {
@@ -528,7 +570,10 @@ function renderList() {
           ${ p.reviewCount ? ` ／ ★${p.rating}（${p.reviewCount}件）` : '' }
         </div>
       </div>
-      <button class="btn btn-danger" onclick="deleteProduct(${p.id})">削除</button>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button class="btn btn-edit" onclick="editProduct(${p.id})">編集</button>
+        <button class="btn btn-danger" onclick="deleteProduct(${p.id})">削除</button>
+      </div>
     </div>
   `).join('');
 }
