@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>命名書ずかん｜手書き・和風・洋風・納期で選べる命名書まとめ</title>
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --surface: #FFFFFF;
+      --border: #EDE9E3;
+      --text-primary: #2C2825;
+      --text-secondary: #8A8078;
+      --accent: #C9A882;
+      --accent-light: #F5EDE3;
+      --accent-dark: #A8895F;
+      --pink: #E8D5CC;
+      --pink-light: #FDF6F3;
+      --shadow-sm: 0 1px 4px rgba(44,40,37,0.06);
+      --shadow-md: 0 4px 16px rgba(44,40,37,0.10);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    .logo-text {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 0.08em;
+      margin-top: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .count-badge {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .count-badge span {
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    /* ヒーロー */
+    .hero {
+      background: linear-gradient(160deg, var(--pink-light) 0%, var(--accent-light) 100%);
+      padding: 40px 24px 32px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .hero p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .hero-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* フィルターバー */
+    .filter-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 60px;
+      z-index: 90;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      align-items: center;
+    }
+
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    .filter-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-dark);
+      background: var(--accent-light);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* ソートバー */
+    .sort-bar {
+      padding: 14px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .result-count strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .sort-select {
+      font-size: 12px;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      background: var(--surface);
+      cursor: pointer;
+      font-family: inherit;
+      outline: none;
+    }
+
+    /* グリッド */
+    .grid-container {
+      padding: 16px 24px 60px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    /* 商品カード */
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-image-wrap {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--accent-light);
+    }
+
+    .card-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover .card-image-wrap img {
+      transform: scale(1.04);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-dark);
+      backdrop-filter: blur(4px);
+    }
+
+    .card-badge.new {
+      background: var(--accent);
+      color: white;
+    }
+
+    .card-shop {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.88);
+      border-radius: 6px;
+      padding: 3px 7px;
+      font-size: 9px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .card-body {
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .card-name {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .card-tag {
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-stars {
+      color: #E8B84B;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    .card-rating {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .card-delivery {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: auto;
+    }
+
+    .card-delivery span {
+      color: #6BAA75;
+      font-weight: 600;
+    }
+
+    .card-footer {
+      padding: 0 14px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-price {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .card-price sup {
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .card-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .card-btn:hover { opacity: 0.88; }
+
+    /* 空状態 */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .empty-state p { font-size: 15px; margin-top: 12px; }
+
+    /* フッター */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 2;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .hero { padding: 28px 16px 24px; }
+      .hero h1 { font-size: 18px; }
+      .grid-container { padding: 12px 12px 60px; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .filter-bar { padding: 12px 16px; }
+      .sort-bar { padding: 12px 16px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-mark">命</div>
+    <div>
+      <div class="logo-text">命名書ずかん</div>
+      <div class="logo-sub">MEIMEI-SHO ZUKAN</div>
+    </div>
+  </a>
+  <div class="header-right">
+    <div class="count-badge">全 <span id="totalCount">0</span> 商品掲載</div>
+  </div>
+</header>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <h1>赤ちゃんに贈る、世界にひとつの名前。</h1>
+  <p>手書き・和風・洋風・デジタル——スタイルや納期で、ぴったりの一枚を見つけてください。</p>
+  <div class="hero-tags">
+    <span class="hero-tag">手書き</span>
+    <span class="hero-tag">和風・洋風</span>
+    <span class="hero-tag">即日対応</span>
+    <span class="hero-tag">送料無料</span>
+    <span class="hero-tag">額縁セット</span>
+    <span class="hero-tag">名入れ</span>
+  </div>
+</div>
+
+<!-- フィルターバー -->
+<div class="filter-bar">
+  <div class="filter-scroll">
+    <span class="filter-label">絞り込み</span>
+
+    <div class="filter-group" id="filterStyle">
+      <button class="filter-btn active" data-filter="style" data-value="all">すべて</button>
+      <button class="filter-btn" data-filter="style" data-value="和風">和風</button>
+      <button class="filter-btn" data-filter="style" data-value="洋風">洋風</button>
+      <button class="filter-btn" data-filter="style" data-value="モダン">モダン</button>
+      <button class="filter-btn" data-filter="style" data-value="ナチュラル">ナチュラル</button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group" id="filterType">
+      <button class="filter-btn active" data-filter="type" data-value="all">形式：すべて</button>
+      <button class="filter-btn" data-filter="type" data-value="手書き">手書き</button>
+      <button class="filter-btn" data-filter="type" data-value="デジタル">デジタル</button>
+      <button class="filter-btn" data-filter="type" data-value="印刷">印刷</button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group" id="filterPrice">
+      <button class="filter-btn active" data-filter="price" data-value="all">価格：すべて</button>
+      <button class="filter-btn" data-filter="price" data-value="3000">〜3,000円</button>
+      <button class="filter-btn" data-filter="price" data-value="5000">〜5,000円</button>
+      <button class="filter-btn" data-filter="price" data-value="10000">〜10,000円</button>
+      <button class="filter-btn" data-filter="price" data-value="10001">10,000円〜</button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group" id="filterShop">
+      <button class="filter-btn active" data-filter="shop" data-value="all">購入先：すべて</button>
+      <button class="filter-btn" data-filter="shop" data-value="Amazon">Amazon</button>
+      <button class="filter-btn" data-filter="shop" data-value="楽天">楽天</button>
+      <button class="filter-btn" data-filter="shop" data-value="minne">minne</button>
+      <button class="filter-btn" data-filter="shop" data-value="Creema">Creema</button>
+    </div>
+  </div>
+</div>
+
+<!-- ソートバー -->
+<div class="sort-bar">
+  <div class="result-count"><strong id="resultCount">0</strong> 件表示中</div>
+  <select class="sort-select" id="sortSelect">
+    <option value="rating">評価が高い順</option>
+    <option value="price_asc">価格が安い順</option>
+    <option value="price_desc">価格が高い順</option>
+    <option value="new">新着順</option>
+  </select>
+</div>
+
+<!-- グリッド -->
+<div class="grid-container">
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState">
+    <div style="font-size:40px">🔍</div>
+    <p>条件に合う商品が見つかりませんでした。<br>絞り込みを変えてみてください。</p>
+  </div>
+</div>
+
+<footer>
+  <div>命名書ずかん｜MEIMEI-SHO ZUKAN</div>
+  <div>掲載商品へのリンクはアフィリエイトリンクを含む場合があります。</div>
+  <div style="margin-top:8px; color:#C9A882;">© 2025 命名書ずかん</div>
+</footer>
+
+<script>
+// =====================
+// 商品データ
+// =====================
+const products = [
+  {
+    id: 1,
+    name: "手書き命名書 〜和紙×筆文字〜 職人仕上げの本格派",
+    price: 4800,
+    style: "和風",
+    type: "手書き",
+    shop: "minne",
+    rating: 4.9,
+    reviewCount: 312,
+    delivery: "3〜5日",
+    tags: ["手書き", "額縁付き", "名入れ"],
+    image: "https://placehold.co/400x400/F5EDE3/A8895F?text=和風+手書き",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 2,
+    name: "おしゃれ命名書 ウォーターカラー水彩デザイン",
+    price: 3200,
+    style: "洋風",
+    type: "デジタル",
+    shop: "Creema",
+    rating: 4.7,
+    reviewCount: 189,
+    delivery: "即日〜3日",
+    tags: ["データ納品", "送料無料"],
+    image: "https://placehold.co/400x400/EDE8F5/6B5FA8?text=洋風+水彩",
+    url: "#",
+    isNew: true
+  },
+  {
+    id: 3,
+    name: "命名書 木製フレーム付き ナチュラルウッド",
+    price: 6800,
+    style: "ナチュラル",
+    type: "印刷",
+    shop: "Amazon",
+    rating: 4.6,
+    reviewCount: 445,
+    delivery: "翌日〜2日",
+    tags: ["額縁付き", "送料無料", "名入れ"],
+    image: "https://placehold.co/400x400/EDF5ED/5FA87A?text=ナチュラル+木製",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 4,
+    name: "モダン命名書 シンプルデザイン A4サイズ",
+    price: 2480,
+    style: "モダン",
+    type: "印刷",
+    shop: "楽天",
+    rating: 4.5,
+    reviewCount: 267,
+    delivery: "2〜4日",
+    tags: ["送料無料", "名入れ"],
+    image: "https://placehold.co/400x400/F0F0F0/555555?text=モダン+シンプル",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 5,
+    name: "金彩命名書 豪華箔押し仕立て 桐箱入り",
+    price: 12800,
+    style: "和風",
+    type: "印刷",
+    shop: "楽天",
+    rating: 4.8,
+    reviewCount: 98,
+    delivery: "5〜7日",
+    tags: ["箔押し", "桐箱", "名入れ"],
+    image: "https://placehold.co/400x400/F5F0DC/A89A3F?text=和風+金彩",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 6,
+    name: "似顔絵命名書 手書きイラスト入り オリジナル",
+    price: 8900,
+    style: "洋風",
+    type: "手書き",
+    shop: "minne",
+    rating: 4.9,
+    reviewCount: 156,
+    delivery: "7〜14日",
+    tags: ["手書き", "似顔絵", "オーダー"],
+    image: "https://placehold.co/400x400/FDE8E8/A85F5F?text=似顔絵入り",
+    url: "#",
+    isNew: true
+  },
+  {
+    id: 7,
+    name: "北欧風命名書 フラワーデザイン インテリアに映える",
+    price: 3800,
+    style: "洋風",
+    type: "デジタル",
+    shop: "Creema",
+    rating: 4.6,
+    reviewCount: 203,
+    delivery: "即日〜2日",
+    tags: ["データ納品", "北欧風"],
+    image: "https://placehold.co/400x400/F0F5E8/7AA85F?text=北欧風+花柄",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 8,
+    name: "命名書 ヒノキ材 レーザー彫刻 立て掛けタイプ",
+    price: 5500,
+    style: "ナチュラル",
+    type: "印刷",
+    shop: "Amazon",
+    rating: 4.7,
+    reviewCount: 334,
+    delivery: "翌日〜3日",
+    tags: ["木材", "彫刻", "送料無料"],
+    image: "https://placehold.co/400x400/F5EDD8/8B6914?text=ヒノキ+彫刻",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 9,
+    name: "筆文字アート命名書 書家による本格手書き",
+    price: 9800,
+    style: "和風",
+    type: "手書き",
+    shop: "minne",
+    rating: 5.0,
+    reviewCount: 67,
+    delivery: "10〜14日",
+    tags: ["手書き", "書道", "額縁付き"],
+    image: "https://placehold.co/400x400/F5F0E8/6B4F2A?text=書家+筆文字",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 10,
+    name: "命名書 くすみカラー おしゃれフレーム付き",
+    price: 4200,
+    style: "モダン",
+    type: "印刷",
+    shop: "楽天",
+    rating: 4.4,
+    reviewCount: 178,
+    delivery: "3〜5日",
+    tags: ["くすみカラー", "額縁付き", "名入れ"],
+    image: "https://placehold.co/400x400/EDE8F0/7A6B8A?text=くすみ+モダン",
+    url: "#",
+    isNew: true
+  },
+  {
+    id: 11,
+    name: "命名書 水引飾り付き 和紙製 伝統工芸",
+    price: 7200,
+    style: "和風",
+    type: "印刷",
+    shop: "Creema",
+    rating: 4.8,
+    reviewCount: 89,
+    delivery: "5〜10日",
+    tags: ["水引", "和紙", "伝統工芸"],
+    image: "https://placehold.co/400x400/FDF0F0/C95F5F?text=水引+和紙",
+    url: "#",
+    isNew: false
+  },
+  {
+    id: 12,
+    name: "おたんじょうびおめでとう命名書 かわいい動物柄",
+    price: 1980,
+    style: "ナチュラル",
+    type: "デジタル",
+    shop: "Amazon",
+    rating: 4.3,
+    reviewCount: 512,
+    delivery: "即日",
+    tags: ["データ納品", "送料無料", "動物"],
+    image: "https://placehold.co/400x400/E8F5F0/3FA882?text=かわいい+動物",
+    url: "#",
+    isNew: false
+  }
+];
+
+// =====================
+// フィルター状態
+// =====================
+let filters = { style: "all", type: "all", price: "all", shop: "all" };
+let sortBy = "rating";
+
+// =====================
+// 商品カード生成
+// =====================
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  let s = "★".repeat(full);
+  if (half) s += "☆";
+  return s;
+}
+
+function createCard(p) {
+  return `
+    <div class="product-card" onclick="window.open('${p.url}','_blank')">
+      <div class="card-image-wrap">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        ${p.isNew ? '<span class="card-badge new">NEW</span>' : `<span class="card-badge">${p.type}</span>`}
+        <span class="card-shop">${p.shop}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-tags">
+          ${p.tags.slice(0,2).map(t => `<span class="card-tag">${t}</span>`).join("")}
+        </div>
+        <div class="card-meta">
+          <span class="card-stars">${renderStars(p.rating)}</span>
+          <span class="card-rating">${p.rating} (${p.reviewCount}件)</span>
+        </div>
+        <div class="card-delivery">納期：<span>${p.delivery}</span></div>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><sup>¥</sup>${p.price.toLocaleString()}</div>
+        <a class="card-btn" href="${p.url}" target="_blank" onclick="event.stopPropagation()">見る →</a>
+      </div>
+    </div>
+  `;
+}
+
+// =====================
+// フィルター・ソート適用
+// =====================
+function getFiltered() {
+  return products.filter(p => {
+    if (filters.style !== "all" && p.style !== filters.style) return false;
+    if (filters.type !== "all" && p.type !== filters.type) return false;
+    if (filters.shop !== "all" && p.shop !== filters.shop) return false;
+    if (filters.price !== "all") {
+      const v = parseInt(filters.price);
+      if (v === 3000 && p.price > 3000) return false;
+      if (v === 5000 && (p.price <= 3000 || p.price > 5000)) return false;
+      if (v === 10000 && (p.price <= 5000 || p.price > 10000)) return false;
+      if (v === 10001 && p.price <= 10000) return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    if (sortBy === "rating") return b.rating - a.rating;
+    if (sortBy === "price_asc") return a.price - b.price;
+    if (sortBy === "price_desc") return b.price - a.price;
+    if (sortBy === "new") return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+    return 0;
+  });
+}
+
+function render() {
+  const filtered = getFiltered();
+  const grid = document.getElementById("productGrid");
+  const empty = document.getElementById("emptyState");
+  document.getElementById("resultCount").textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = "";
+    empty.style.display = "block";
+  } else {
+    empty.style.display = "none";
+    grid.innerHTML = filtered.map(createCard).join("");
+  }
+}
+
+// =====================
+// イベント
+// =====================
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const filterKey = btn.dataset.filter;
+    const value = btn.dataset.value;
+
+    // 同グループの active を外す
+    document.querySelectorAll(`[data-filter="${filterKey}"]`).forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    filters[filterKey] = value;
+    render();
+  });
+});
+
+document.getElementById("sortSelect").addEventListener("change", e => {
+  sortBy = e.target.value;
+  render();
+});
+
+// 初期表示
+document.getElementById("totalCount").textContent = products.length;
+render();
+</script>
+</body>
+</html>
