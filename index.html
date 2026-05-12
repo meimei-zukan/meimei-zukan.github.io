@@ -343,7 +343,15 @@
     }
 
     .product-grid.rest-grid {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1200px) {
+      .product-grid.rest-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .product-grid.rest-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     /* 商品カード */
