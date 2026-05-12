@@ -1,0 +1,4 @@
+.claude/
+*.tmp.*
+maintenance-report.md
+node_modules/
