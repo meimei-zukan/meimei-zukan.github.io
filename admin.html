@@ -272,12 +272,18 @@ function parseUrl() {
   const info = document.getElementById('urlInfo');
   if (!url) { info.innerHTML = ''; return null; }
 
-  // Amazon
+  // Amazon (通常URL)
   const amazonMatch = url.match(/amazon\.co\.jp\/(?:[^\/]+\/)?(?:dp|gp\/product)\/([A-Z0-9]{10})/);
   if (amazonMatch) {
     const asin = amazonMatch[1];
     info.innerHTML = `<span class="shop-badge shop-amazon">Amazon</span> ASIN: ${asin}`;
     return { shop: 'Amazon', asin };
+  }
+
+  // Amazon 短縮URL (amzn.to / amzn.asia)
+  if (/^https?:\/\/(amzn\.to|amzn\.asia)\//.test(url)) {
+    info.innerHTML = `<span class="shop-badge shop-amazon">Amazon</span> 短縮URL（そのまま登録します）<br><span style="color:#888;font-size:11px;">※可能であれば商品ページの長いURL（…/dp/XXXX…）を使うとアフィリエイトタグが自動付与されます</span>`;
+    return { shop: 'Amazon', shortUrl: url };
   }
 
   // Rakuten
@@ -301,6 +307,7 @@ function parseUrl() {
 function buildAffiliateUrl(parsed) {
   if (!parsed) return '';
   if (parsed.shop === 'Amazon') {
+    if (parsed.shortUrl) return parsed.shortUrl; // 短縮URLはそのまま
     return `https://www.amazon.co.jp/dp/${parsed.asin}?tag=${state.affiliateConfig.amazon.tag}`;
   }
   if (parsed.shop === '楽天') {
