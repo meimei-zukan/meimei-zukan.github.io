@@ -472,8 +472,21 @@
   <div class="filter-scroll">
     <span class="filter-label">絞り込み</span>
 
+    <div class="filter-group" id="filterCategory">
+      <button class="filter-btn active" data-filter="category" data-value="all">種類：すべて</button>
+      <button class="filter-btn" data-filter="category" data-value="用紙のみ">用紙のみ</button>
+      <button class="filter-btn" data-filter="category" data-value="代筆">代筆</button>
+      <button class="filter-btn" data-filter="category" data-value="＋手形足形">＋手形足形</button>
+      <button class="filter-btn" data-filter="category" data-value="＋写真">＋写真</button>
+      <button class="filter-btn" data-filter="category" data-value="＋フレーム">＋フレーム</button>
+      <button class="filter-btn" data-filter="category" data-value="＋アルバム">＋アルバム</button>
+      <button class="filter-btn" data-filter="category" data-value="＋木製">＋木製</button>
+    </div>
+
+    <div class="filter-divider"></div>
+
     <div class="filter-group" id="filterStyle">
-      <button class="filter-btn active" data-filter="style" data-value="all">すべて</button>
+      <button class="filter-btn active" data-filter="style" data-value="all">スタイル：すべて</button>
       <button class="filter-btn" data-filter="style" data-value="和風">和風</button>
       <button class="filter-btn" data-filter="style" data-value="洋風">洋風</button>
       <button class="filter-btn" data-filter="style" data-value="モダン">モダン</button>
@@ -541,274 +554,12 @@ function moshimoUrl(itemUrl) {
   return `https://af.moshimo.com/af/c/click?a_id=1886762&p_id=54&pc_id=54&pl_id=616&url=${encodeURIComponent(itemUrl)}`;
 }
 
-// =====================
-// 静的商品データ（Amazon・楽天）
-// =====================
-const staticProducts = [
-  {
-    id: 4,
-    name: "命名書 選べる40デザイン A4 ラミネート対応 代筆 オーダー",
-    price: 1280,
-    style: "モダン",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.6,
-    reviewCount: 4,
-    delivery: "2日以内",
-    tags: ["送料無料", "ラミネート"],
-    image: "https://m.media-amazon.com/images/I/71mTvAP++1L._SL500_.jpg",
-    url: "https://www.amazon.co.jp/dp/B076FPC184?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 5,
-    name: "命名書 書家による手書き毛筆名入れ 両面・ローマ字付き",
-    price: 3900,
-    style: "和風",
-    type: "手書き",
-    shop: "Amazon",
-    rating: 4.4,
-    reviewCount: 48,
-    delivery: "〜7日",
-    tags: ["手書き", "ローマ字付き"],
-    image: "https://m.media-amazon.com/images/I/81X0Qo45mhL._SL500_.jpg",
-    url: "https://www.amazon.co.jp/dp/B09SD9TTFG?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 6,
-    name: "命名書 台紙 手形・足形・写真が入る まり白 ゴールド箔",
-    price: 5830,
-    style: "ナチュラル",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.0,
-    reviewCount: 34,
-    delivery: "翌日〜2日",
-    tags: ["手形", "足形"],
-    image: "https://m.media-amazon.com/images/I/51VgKoFBxSL._SL500_.jpg",
-    url: "https://www.amazon.co.jp/dp/B07GWGCJXX?tag=art0e3-22",
-    isNew: false
-  },
-  // ===== Amazon 追加商品 =====
-  {
-    id: 7,
-    name: "whipwhip 命名書 書道家アーティスト監修 シンプル 用紙 5種類",
-    price: 1680,
-    style: "モダン",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.7,
-    reviewCount: 300,
-    delivery: "〜3日",
-    tags: ["シンプル", "5枚セット"],
-    image: "https://placehold.co/400x400/F5F5F5/888888?text=命名書",
-    url: "https://www.amazon.co.jp/dp/B0DJ8K4Y88?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 8,
-    name: "Onburt 刺繍 名入れ オリジナル 命名書 フレーム付き 日本製",
-    price: 4980,
-    style: "ナチュラル",
-    type: "手書き",
-    shop: "Amazon",
-    rating: 4.7,
-    reviewCount: 200,
-    delivery: "〜7日",
-    tags: ["刺繍", "フレーム付き"],
-    image: "https://baseec-img-mng.akamaized.net/images/item/origin/f04e8458a1ced98ec393e1af10b98a1d.jpg",
-    url: "https://www.amazon.co.jp/dp/B0BCV7CVLX?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 9,
-    name: "パイロット 手がた記録 命名紙セット スヌーピー",
-    price: 2200,
-    style: "ナチュラル",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.2,
-    reviewCount: 500,
-    delivery: "〜3日",
-    tags: ["手形", "スヌーピー"],
-    image: "https://www.pilot-toy.com/birth/detail_img/snoopy01.jpg",
-    url: "https://www.amazon.co.jp/dp/B08Y183HXV?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 10,
-    name: "マルアイ ディズニー IJ命名用紙 A4 ベビーミニー 3枚",
-    price: 532,
-    style: "洋風",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.1,
-    reviewCount: 800,
-    delivery: "翌日〜2日",
-    tags: ["ディズニー", "ミニー"],
-    image: "https://placehold.co/400x400/FFE4F0/CC6699?text=Disney+Minnie",
-    url: "https://www.amazon.co.jp/dp/B0052HJ9OY?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 11,
-    name: "命名紙 鶴亀タイプB（金散らし）3枚セット A4 下敷き付き",
-    price: 1000,
-    style: "和風",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.7,
-    reviewCount: 100,
-    delivery: "〜5日",
-    tags: ["鶴亀", "3枚セット"],
-    image: "https://placehold.co/400x400/FFF8E8/C8A850?text=鶴亀",
-    url: "https://www.amazon.co.jp/dp/B0C4Y9SFZH?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 12,
-    name: "ナカバヤシ 命名書ファイル",
-    price: 1980,
-    style: "モダン",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.3,
-    reviewCount: 150,
-    delivery: "〜3日",
-    tags: ["アルバム", "フレーム付き"],
-    image: "https://placehold.co/400x400/F0F4FF/5566AA?text=命名ファイル",
-    url: "https://www.amazon.co.jp/dp/B0C7KMQNXZ?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 13,
-    name: "マルアイ ディズニー IJ命名用紙 A4 ベビーミッキー 3枚",
-    price: 532,
-    style: "洋風",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.1,
-    reviewCount: 700,
-    delivery: "翌日〜2日",
-    tags: ["ディズニー", "ミッキー"],
-    image: "https://placehold.co/400x400/E4F0FF/6699CC?text=Disney+Mickey",
-    url: "https://www.amazon.co.jp/dp/B0052HJ9NK?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 14,
-    name: "トミーメモリアル 命名紙 男の子",
-    price: 999,
-    style: "洋風",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.0,
-    reviewCount: 120,
-    delivery: "〜3日",
-    tags: ["かわいい", "男の子"],
-    image: "https://placehold.co/400x400/E8F4FF/4488CC?text=命名紙",
-    url: "https://www.amazon.co.jp/dp/B00YH117BE?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 15,
-    name: "命名書 色紙 額付き 書道家代筆 手書き 両親の名前入り",
-    price: 3980,
-    style: "和風",
-    type: "手書き",
-    shop: "Amazon",
-    rating: 4.5,
-    reviewCount: 120,
-    delivery: "〜7日",
-    tags: ["書道家", "額縁付き"],
-    image: "https://placehold.co/400x400/F5EDE3/A8895F?text=書道家",
-    url: "https://www.amazon.co.jp/dp/B0895YDS8R?tag=art0e3-22",
-    isNew: false
-  },
-  {
-    id: 16,
-    name: "筆耕屋さん フォトフレーム命名書 全4色",
-    price: 2480,
-    style: "モダン",
-    type: "印刷",
-    shop: "Amazon",
-    rating: 4.4,
-    reviewCount: 130,
-    delivery: "〜5日",
-    tags: ["写真入り", "フレーム付き"],
-    image: "https://placehold.co/400x400/FFF5F0/CC8866?text=フォトフレーム",
-    url: "https://www.amazon.co.jp/dp/B07LBXKBP7?tag=art0e3-22",
-    isNew: false
-  },
-  // ===== 楽天市場 トップ商品 =====
-  {
-    id: 21,
-    name: "命名書 選べる61デザイン おしゃれ 手書き代筆 オーダー",
-    price: 1580,
-    style: "モダン",
-    type: "手書き",
-    shop: "楽天",
-    rating: 4.80,
-    reviewCount: 736,
-    delivery: "〜7日",
-    tags: ["手書き", "代筆"],
-    image: "https://shop.r10s.jp/kirarihonpo/cabinet/meimeisyo/tegaki01/imgrc0095581779.jpg",
-    url: "https://hb.afl.rakuten.co.jp/ichiba/539c41fd.15d3f407.539c41fe.fae19085/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkirarihonpo%2F20000000%2F",
-    isNew: false
-  },
-  {
-    id: 22,
-    name: "命名書 ランキング1位 ディズニー 手書き・印刷 選べるデザイン",
-    price: 1250,
-    style: "洋風",
-    type: "手書き",
-    shop: "楽天",
-    rating: 4.5,
-    reviewCount: 286,
-    delivery: "〜5日",
-    tags: ["ディズニー", "手書き"],
-    image: "https://shop.r10s.jp/enishi-ya0212/cabinet/meimeisho001/meimeitegakifont/tegakifont_main_6609.jpg",
-    url: "https://hb.afl.rakuten.co.jp/ichiba/539c41fd.15d3f407.539c41fe.fae19085/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fenishi-ya0212%2Fmeimeisho%2F",
-    isNew: false
-  },
-  {
-    id: 23,
-    name: "命名書 アクリルフレーム付き 3書体 おしゃれ オーダー代筆",
-    price: 3880,
-    style: "モダン",
-    type: "印刷",
-    shop: "楽天",
-    rating: 4.91,
-    reviewCount: 129,
-    delivery: "〜7日",
-    tags: ["フレーム付き", "代筆"],
-    image: "https://shop.r10s.jp/kirarihonpo/cabinet/akuriru/11759670/af_top_r.jpg",
-    url: "https://hb.afl.rakuten.co.jp/ichiba/539c41fd.15d3f407.539c41fe.fae19085/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkirarihonpo%2F40000000%2F",
-    isNew: false
-  },
-  {
-    id: 24,
-    name: "命名書 フラワーボックス オーダー代筆 プレミアム出産祝い",
-    price: 9200,
-    style: "ナチュラル",
-    type: "手書き",
-    shop: "楽天",
-    rating: 4.96,
-    reviewCount: 89,
-    delivery: "〜14日",
-    tags: ["手書き", "名入れ"],
-    image: "https://shop.r10s.jp/kirarihonpo/cabinet/fb/imgrc0078975761.jpg",
-    url: "https://hb.afl.rakuten.co.jp/ichiba/539c41fd.15d3f407.539c41fe.fae19085/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkirarihonpo%2F30000000%2F",
-    isNew: false
-  }
-];
 
 // =====================
 // フィルター・ソート状態
 // =====================
 let products = [];
-let filters = { style: "all", type: "all", price: "all", shop: "all" };
+let filters = { category: "all", style: "all", type: "all", price: "all", shop: "all" };
 let sortBy = "reviewCount";
 
 
@@ -855,6 +606,7 @@ function createCard(p) {
 // =====================
 function getFiltered() {
   return products.filter(p => {
+    if (filters.category !== "all" && p.category !== filters.category) return false;
     if (filters.style !== "all" && p.style !== filters.style) return false;
     if (filters.type !== "all" && p.type !== filters.type) return false;
     if (filters.shop !== "all" && p.shop !== filters.shop) return false;
@@ -919,8 +671,15 @@ function loadManualProducts() {
   catch { return []; }
 }
 
-function init() {
-  products = [...staticProducts, ...loadManualProducts()];
+async function init() {
+  try {
+    const res = await fetch('products.json?v=' + Date.now());
+    const data = await res.json();
+    products = [...(data.products || []), ...loadManualProducts()];
+  } catch (e) {
+    console.error('products.json読み込みエラー:', e);
+    products = loadManualProducts();
+  }
   render();
 }
 
