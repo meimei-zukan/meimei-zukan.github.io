@@ -875,7 +875,6 @@ function renderSection(catKey, items) {
       <h2><span class="cat-name-label">${catKey}</span></h2>
       <p>${info.desc}</p>
     </div>
-    <div class="cat-count">${items.length}件</div>
   </div>`;
 
   if (top3.length >= 1) {
@@ -892,7 +891,7 @@ function renderSection(catKey, items) {
   }
 
   if (rest.length > 0) {
-    html += `<div class="rest-header">そのほか（${rest.length}件）</div>`;
+    html += `<div class="rest-header">そのほか</div>`;
     html += `<div class="product-grid rest-grid">${rest.map(createCard).join('')}</div>`;
   }
 
