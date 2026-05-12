@@ -127,6 +127,7 @@ h1 { font-size: 18px; color: var(--accent-dark); }
       <label>商品ページのURL（Amazon / 楽天 / Yahoo）</label>
       <input type="text" id="rawUrl" placeholder="https://www.amazon.co.jp/dp/B07... または item.rakuten.co.jp/..." oninput="parseUrl()">
       <div id="urlInfo" style="font-size:11px; color:var(--muted); margin-top:4px;"></div>
+      <button type="button" onclick="autoFetchFromUrl()" style="margin-top:6px; padding:6px 12px; font-size:12px; background:#fff; border:1.5px solid var(--accent); color:var(--accent-dark); border-radius:6px; cursor:pointer; font-family:inherit;">🔄 楽天URLから自動取得</button>
     </div>
 
     <div class="form-row">
@@ -257,7 +258,7 @@ let state = {
   categories: [],
   affiliateConfig: {
     amazon: { tag: 'art0e3-22' },
-    rakuten: { affiliateId: '539c41fd.15d3f407.539c41fe.fae19085' },
+    rakuten: { affiliateId: '539b76f5.74cbe0b5.539b76f6.a2765100', applicationId: 'b1990933-1640-4544-8047-be6b8c3be191' },
     yahoo: { sid: '3576687', pid: '2025875' }
   },
   filterCategory: 'all',
@@ -302,6 +303,51 @@ function parseUrl() {
 
   info.innerHTML = '<span style="color:var(--red);">⚠️ Amazon / 楽天 / Yahoo のURLを貼り付けてください</span>';
   return null;
+}
+
+// ===== 楽天APIから商品情報を取得 =====
+async function autoFetchFromUrl() {
+  const parsed = parseUrl();
+  if (!parsed) { showMsg('有効なURLを貼り付けてください', 'error'); return; }
+  if (parsed.shop !== '楽天') {
+    showMsg('自動取得は楽天URLのみ対応しています（AmazonとYahooは手動入力をお願いします）', 'error');
+    return;
+  }
+  const appId = state.affiliateConfig.rakuten.applicationId;
+  if (!appId) { showMsg('楽天アプリIDが未設定です', 'error'); return; }
+
+  const info = document.getElementById('urlInfo');
+  info.innerHTML += '<br>⏳ 楽天APIから取得中...';
+  try {
+    const itemCode = `${parsed.shopCode}:${parsed.itemCode}`;
+    const apiUrl = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601?applicationId=${appId}&itemCode=${encodeURIComponent(itemCode)}&formatVersion=2`;
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+    if (!data.Items || data.Items.length === 0) {
+      info.innerHTML += '<br>⚠️ 商品が見つかりませんでした';
+      return;
+    }
+    const item = data.Items[0];
+    // フォームに反映
+    if (item.itemName) document.getElementById('name').value = item.itemName;
+    if (item.itemPrice) document.getElementById('price').value = item.itemPrice;
+    if (item.reviewCount) document.getElementById('reviewCount').value = item.reviewCount;
+    if (item.reviewAverage) document.getElementById('rating').value = item.reviewAverage;
+    // 画像
+    if (item.mediumImageUrls && item.mediumImageUrls.length > 0) {
+      let imgUrl = item.mediumImageUrls[0];
+      if (typeof imgUrl === 'object') imgUrl = imgUrl.imageUrl;
+      imgUrl = imgUrl.replace(/\?_ex=\d+x\d+/, ''); // サイズ指定を削除して元画像
+      state.currentImage = imgUrl;
+      showImagePreview(imgUrl);
+    }
+    info.innerHTML = info.innerHTML.replace('⏳ 楽天APIから取得中...', '✅ 自動取得完了！');
+    showMsg('商品情報を取得しました', 'success');
+  } catch (e) {
+    console.error(e);
+    info.innerHTML += '<br>❌ エラー: ' + e.message;
+    showMsg('取得に失敗しました（CORSエラーの可能性があります）', 'error');
+  }
 }
 
 function buildAffiliateUrl(parsed) {
