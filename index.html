@@ -236,10 +236,114 @@
       padding: 16px 24px 60px;
     }
 
+    /* カテゴリーセクション（章立て） */
+    .category-section {
+      margin-bottom: 56px;
+    }
+
+    .cat-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 24px 0 16px;
+      border-bottom: 3px solid var(--accent);
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .cat-header::before {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      background: var(--accent-dark);
+    }
+
+    .cat-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+
+    .cat-icon {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    .cat-header p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-left: auto;
+    }
+
+    .cat-count {
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    /* ランキング（トップ3） */
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .podium-item {
+      position: relative;
+    }
+
+    .podium-item .product-card {
+      border-width: 2.5px;
+      box-shadow: 0 4px 20px rgba(44,40,37,0.12);
+    }
+
+    .podium-item.rank-1 .product-card { border-color: #E5B83C; }
+    .podium-item.rank-2 .product-card { border-color: #B8B8B8; }
+    .podium-item.rank-3 .product-card { border-color: #C28250; }
+
+    .rank-badge {
+      position: absolute;
+      top: -10px;
+      left: 14px;
+      background: var(--surface);
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(44,40,37,0.15);
+    }
+
+    .rank-1 .rank-badge { background: linear-gradient(135deg, #FFD700, #E5B83C); color: #5C3D00; }
+    .rank-2 .rank-badge { background: linear-gradient(135deg, #E8E8E8, #B8B8B8); color: #404040; }
+    .rank-3 .rank-badge { background: linear-gradient(135deg, #E8A876, #C28250); color: #5C3010; }
+
+    .rest-header {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin: 16px 0 12px;
+      padding-left: 4px;
+    }
+
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .product-grid.rest-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
 
     /* 商品カード */
@@ -432,6 +536,10 @@
       .hero h1 { font-size: 18px; }
       .grid-container { padding: 12px 12px 60px; }
       .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .product-grid.rest-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .podium { grid-template-columns: 1fr; gap: 24px; }
+      .cat-header h2 { font-size: 18px; }
+      .cat-header p { font-size: 11px; }
       .filter-bar { padding: 12px 16px; }
       .sort-bar { padding: 12px 16px 0; }
     }
@@ -628,6 +736,54 @@ function getFiltered() {
   });
 }
 
+// カテゴリー定義（表示順）
+const CATEGORY_DISPLAY = [
+  { key: "代筆",     icon: "✍️", desc: "書道家・刺繍代筆で世界に一つ" },
+  { key: "用紙のみ",  icon: "📝", desc: "自分で書ける用紙タイプ" },
+  { key: "＋手形足形", icon: "👶", desc: "手形足形が残せる" },
+  { key: "＋写真",    icon: "📷", desc: "写真が入るタイプ" },
+  { key: "＋フレーム", icon: "🖼️", desc: "額付き・飾れる" },
+  { key: "＋アルバム", icon: "📔", desc: "アルバム型" },
+  { key: "＋木製",    icon: "🪵", desc: "木札・木製プレート" }
+];
+
+function renderSection(catKey, items) {
+  if (items.length === 0) return '';
+  const info = CATEGORY_DISPLAY.find(c => c.key === catKey) || { icon: '📦', desc: '' };
+
+  // 並び替えはレビュー数の多い順固定（ランキング用）
+  const sorted = [...items].sort((a, b) => b.reviewCount - a.reviewCount);
+  const top3 = sorted.slice(0, 3);
+  const rest = sorted.slice(3);
+
+  let html = `<section class="category-section">`;
+  html += `<div class="cat-header">
+    <h2><span class="cat-icon">${info.icon}</span>${catKey}</h2>
+    <p>${info.desc}<span class="cat-count">${items.length}件</span></p>
+  </div>`;
+
+  if (top3.length >= 1) {
+    html += `<div class="podium">`;
+    top3.forEach((p, i) => {
+      const rank = i + 1;
+      const labels = ['👑 1位', '🥈 2位', '🥉 3位'];
+      html += `<div class="podium-item rank-${rank}">
+        <span class="rank-badge">${labels[i]}</span>
+        ${createCard(p)}
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (rest.length > 0) {
+    html += `<div class="rest-header">そのほか（${rest.length}件）</div>`;
+    html += `<div class="product-grid rest-grid">${rest.map(createCard).join('')}</div>`;
+  }
+
+  html += `</section>`;
+  return html;
+}
+
 function render() {
   const filtered = getFiltered();
   const grid = document.getElementById("productGrid");
@@ -638,10 +794,31 @@ function render() {
   if (filtered.length === 0) {
     grid.innerHTML = "";
     empty.style.display = "block";
-  } else {
-    empty.style.display = "none";
-    grid.innerHTML = filtered.map(createCard).join("");
+    return;
   }
+  empty.style.display = "none";
+
+  // ソートがレビュー数以外（rating/price/new）の場合：フラット表示
+  if (sortBy !== 'reviewCount') {
+    grid.innerHTML = `<div class="product-grid">${filtered.map(createCard).join("")}</div>`;
+    return;
+  }
+
+  // カテゴリーフィルターが特定の1つ：そのセクションだけ表示
+  if (filters.category !== "all") {
+    grid.innerHTML = renderSection(filters.category, filtered);
+    return;
+  }
+
+  // 全カテゴリー：章立て表示
+  const grouped = {};
+  for (const p of filtered) {
+    if (!grouped[p.category]) grouped[p.category] = [];
+    grouped[p.category].push(p);
+  }
+  grid.innerHTML = CATEGORY_DISPLAY
+    .map(c => renderSection(c.key, grouped[c.key] || []))
+    .join('');
 }
 
 // =====================
