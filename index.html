@@ -883,7 +883,6 @@ function render() {
   const grid = document.getElementById("productGrid");
   const empty = document.getElementById("emptyState");
   document.getElementById("resultCount").textContent = filtered.length;
-  document.getElementById("totalCount").textContent = products.length;
 
   if (filtered.length === 0) {
     grid.innerHTML = "";
