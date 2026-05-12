@@ -314,21 +314,40 @@
       z-index: 2;
     }
 
-    .cat-header h2 {
-      font-size: 26px;
+    .cat-tagline {
+      font-size: 22px;
       font-weight: 800;
       color: var(--text-primary);
-      letter-spacing: 0.05em;
-      line-height: 1.2;
+      letter-spacing: 0.06em;
+      line-height: 1.4;
       margin-bottom: 6px;
+      font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    }
+
+    .cat-header h2 {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .cat-name-label {
+      display: inline-block;
+      color: var(--accent-dark);
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 12px;
     }
 
     .cat-header p {
       font-size: 13px;
-      color: var(--accent-dark);
+      color: #6B5D52;
       margin: 0;
-      font-weight: 500;
-      letter-spacing: 0.02em;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      line-height: 1.7;
     }
 
     .cat-count {
@@ -347,7 +366,9 @@
     @media (max-width: 600px) {
       .cat-header { padding: 18px 16px; gap: 14px; }
       .cat-icon-circle { width: 48px; height: 48px; font-size: 24px; }
-      .cat-header h2 { font-size: 18px; }
+      .cat-tagline { font-size: 16px; letter-spacing: 0.04em; }
+      .cat-header h2 { font-size: 10px; letter-spacing: 0.15em; }
+      .cat-name-label { padding: 2px 8px; }
       .cat-header p { font-size: 11px; }
       .cat-count { padding: 5px 11px; font-size: 11px; }
       .category-section { margin-bottom: 56px; }
@@ -828,18 +849,18 @@ function getFiltered() {
 
 // カテゴリー定義（表示順）
 const CATEGORY_DISPLAY = [
-  { key: "代筆",     icon: "✍️", desc: "書道家・刺繍代筆で世界に一つ" },
-  { key: "用紙のみ",  icon: "📝", desc: "自分で書ける用紙タイプ" },
-  { key: "＋手形足形", icon: "👶", desc: "手形足形が残せる" },
-  { key: "＋写真",    icon: "📷", desc: "写真が入るタイプ" },
-  { key: "＋フレーム", icon: "🖼️", desc: "額付き・飾れる" },
-  { key: "＋アルバム", icon: "📔", desc: "アルバム型" },
-  { key: "＋木製",    icon: "🪵", desc: "木札・木製プレート" }
+  { key: "代筆",     icon: "✍️", tagline: "書のプロに、託す。",          desc: "書道家・刺繍作家による、世界に一つの一筆を。" },
+  { key: "用紙のみ",  icon: "📝", tagline: "自分の手で、はじめての名前を。", desc: "想いを込めて自分で書く、シンプルな命名紙。" },
+  { key: "＋手形足形", icon: "👣", tagline: "小さな手と足、今だけの証。",     desc: "今しか残せない小さな手形・足形と一緒に。" },
+  { key: "＋写真",    icon: "📷", tagline: "あの日の表情を、名前とともに。", desc: "生まれたての笑顔と命名を、一枚にとじこめて。" },
+  { key: "＋フレーム", icon: "🖼️", tagline: "ずっと、飾っていたい。",        desc: "額に入れて、リビングに映える上質な一枚。" },
+  { key: "＋アルバム", icon: "📔", tagline: "成長の記録を、一冊の物語に。",   desc: "命名から成長記録まで、まとめて残せるアルバム。" },
+  { key: "＋木製",    icon: "🪵", tagline: "やさしい木目に、刻む。",         desc: "ひのきや天然木に名前を刻む、温もりの一品。" }
 ];
 
 function renderSection(catKey, items) {
   if (items.length === 0) return '';
-  const info = CATEGORY_DISPLAY.find(c => c.key === catKey) || { icon: '📦', desc: '' };
+  const info = CATEGORY_DISPLAY.find(c => c.key === catKey) || { icon: '📦', tagline: '', desc: '' };
 
   // 並び替えはレビュー数の多い順固定（ランキング用）
   const sorted = [...items].sort((a, b) => b.reviewCount - a.reviewCount);
@@ -850,7 +871,8 @@ function renderSection(catKey, items) {
   html += `<div class="cat-header">
     <div class="cat-icon-circle">${info.icon}</div>
     <div class="cat-text">
-      <h2>${catKey}</h2>
+      <div class="cat-tagline">${info.tagline||''}</div>
+      <h2><span class="cat-name-label">${catKey}</span></h2>
       <p>${info.desc}</p>
     </div>
     <div class="cat-count">${items.length}件</div>
