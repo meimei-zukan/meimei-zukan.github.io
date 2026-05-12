@@ -111,6 +111,8 @@
       align-items: flex-start;
     }
 
+    .hero-img-mobile { display: none; }
+
     .hero h1 {
       font-size: 28px;
       font-weight: 800;
@@ -604,13 +606,20 @@
     /* レスポンシブ */
     @media (max-width: 600px) {
       .hero {
-        background-image: linear-gradient(180deg, rgba(253,246,243,0.55) 0%, rgba(253,246,243,0.85) 70%, rgba(253,246,243,0.95) 100%), url('hero.png');
-        background-position: center center;
-        padding: 200px 16px 24px;
-        min-height: 360px;
+        background-image: none;
+        background-color: var(--pink-light);
+        padding: 0 0 24px;
+        min-height: 0;
         text-align: center;
-        align-items: center;
+        align-items: stretch;
       }
+      .hero-img-mobile {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+      }
+      .hero-text { padding: 16px 16px 0; width: 100%; }
       .hero p { max-width: 100%; }
       .hero-tags { justify-content: center; }
       .hero h1 { font-size: 18px; }
@@ -643,15 +652,18 @@
 
 <!-- ヒーロー -->
 <div class="hero">
-  <h1>赤ちゃんに贈る、世界にひとつの名前。</h1>
-  <p>手書き・和風・洋風・デジタル——スタイルや納期で、ぴったりの一枚を見つけてください。</p>
-  <div class="hero-tags">
-    <span class="hero-tag">手書き</span>
-    <span class="hero-tag">和風・洋風</span>
-    <span class="hero-tag">即日対応</span>
-    <span class="hero-tag">送料無料</span>
-    <span class="hero-tag">額縁セット</span>
-    <span class="hero-tag">名入れ</span>
+  <img src="hero.png" alt="" class="hero-img-mobile">
+  <div class="hero-text">
+    <h1>赤ちゃんに贈る、世界にひとつの名前。</h1>
+    <p>手書き・和風・洋風・デジタル——スタイルや納期で、ぴったりの一枚を見つけてください。</p>
+    <div class="hero-tags">
+      <span class="hero-tag">手書き</span>
+      <span class="hero-tag">和風・洋風</span>
+      <span class="hero-tag">即日対応</span>
+      <span class="hero-tag">送料無料</span>
+      <span class="hero-tag">額縁セット</span>
+      <span class="hero-tag">名入れ</span>
+    </div>
   </div>
 </div>
 
