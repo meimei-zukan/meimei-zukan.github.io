@@ -255,7 +255,11 @@ const STORAGE_KEY = 'meimei_admin_data_v2';
 let state = {
   products: [],
   categories: [],
-  affiliateConfig: { amazon: { tag: 'art0e3-22' }, rakuten: { affiliateId: '539c41fd.15d3f407.539c41fe.fae19085' } },
+  affiliateConfig: {
+    amazon: { tag: 'art0e3-22' },
+    rakuten: { affiliateId: '539c41fd.15d3f407.539c41fe.fae19085' },
+    yahoo: { sid: '3576687', pid: '2025875' }
+  },
   filterCategory: 'all',
   filterShop: 'all',
   editingId: null,
@@ -303,8 +307,8 @@ function buildAffiliateUrl(parsed) {
     return `https://hb.afl.rakuten.co.jp/ichiba/${state.affiliateConfig.rakuten.affiliateId}/?pc=${encodeURIComponent(parsed.itemUrl)}`;
   }
   if (parsed.shop === 'Yahoo') {
-    // Yahoo: 直リンク（後でバリューコマースID取得したら差し替え）
-    return parsed.itemUrl;
+    const y = state.affiliateConfig.yahoo;
+    return `https://ck.jp.ap.valuecommerce.com/servlet/referral?sid=${y.sid}&pid=${y.pid}&vc_url=${encodeURIComponent(parsed.itemUrl)}`;
   }
   return '';
 }
