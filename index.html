@@ -223,14 +223,11 @@
       justify-content: space-between;
     }
 
-    .result-count {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .result-count strong {
-      color: var(--text-primary);
-      font-weight: 700;
+    .curation-note {
+      font-size: 11px;
+      color: #A89F95;
+      font-style: italic;
+      letter-spacing: 0.02em;
     }
 
     .sort-select {
@@ -651,7 +648,8 @@
       .cat-header h2 { font-size: 18px; }
       .cat-header p { font-size: 11px; }
       .filter-bar { padding: 12px 16px; }
-      .sort-bar { padding: 12px 16px 0; }
+      .sort-bar { padding: 12px 16px 0; gap: 8px; }
+      .curation-note { font-size: 10px; }
     }
   </style>
 </head>
@@ -743,7 +741,7 @@
 
 <!-- ソートバー -->
 <div class="sort-bar">
-  <div class="result-count"><strong id="resultCount">0</strong> 件表示中</div>
+  <div class="curation-note">人気・売れ筋の商品を厳選して掲載。定期的に更新しています。</div>
   <select class="sort-select" id="sortSelect">
     <option value="reviewCount">レビュー数が多い順</option>
     <option value="rating">評価が高い順</option>
@@ -903,7 +901,6 @@ function render() {
   const filtered = getFiltered();
   const grid = document.getElementById("productGrid");
   const empty = document.getElementById("emptyState");
-  document.getElementById("resultCount").textContent = filtered.length;
 
   if (filtered.length === 0) {
     grid.innerHTML = "";
